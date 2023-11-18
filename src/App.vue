@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import TicTakToePage from "./views/ticTacToe/ticTakToePage.vue";
+import TicTacToePage from "./views/ticTacToePage.vue";
 </script>
 
 <template>
-  <TicTakToePage />
+  <TicTacToePage/>
 </template>
 
