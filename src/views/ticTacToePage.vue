@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {computed, ref} from "vue";
 import ConfettiExplosion from "vue-confetti-explosion";
+import ReloadSvg from "../assets/reload.svg"
 
 type FigerType = 'circle' | 'cross'
 
@@ -69,14 +70,19 @@ function cellClicked(param: cellParam) {
   lastSelectedFigure.value = lastSelectedFigure.value === 'cross' ? 'circle' : 'cross'
   param.figure = lastSelectedFigure.value
 }
+
+function reload() {
+  cellData.value = cellData.value.map(cell => {
+    cell.isClicked = false
+    cell.figure = null
+    return cell
+  })
+}
 </script>
 
 <template>
   <div class="w-screen h-screen bg-[#FAD074] overflow-hidden">
     <div class="relative w-full h-full flex justify-center items-center">
-      <span class="absolute top-1/2 right-1/2 transform -translate-x-1/2 -translate-y-1/2">
-        <ConfettiExplosion v-if="isWinCombination"/>
-      </span>
       <div
           class="grid-container grid grid-rows-3 grid-cols-3 justify-center items-center gap-0 w-[30rem] h-[30rem]"
       >
@@ -84,24 +90,37 @@ function cellClicked(param: cellParam) {
             v-for="param in cellData"
             :key="param.id"
             :disabled="param.isClicked || !!isWinCombination"
-            class="w-full h-full flex items-center justify-center"
+            class="w-full h-full flex items-center justify-center duration-200"
             :class="{ 'hover:bg-[#8DC089]': !param.isClicked && !isWinCombination}"
             @click="cellClicked(param)"
         >
           <span
               v-if="param.isClicked && param.figure === 'circle'"
-              class="circle w-[8rem] h-[8rem] border-4 border-[#FF6933] rounded-full"
+              class="circle w-[8rem] h-[8rem] border-8 border-[#FF6933] rounded-full"
               :class="{'spin': isWinCombination && isWinCombination.includes(param.id)}"
           />
           <span v-if="param.isClicked && param.figure === 'cross'"
                 class="w-[8rem] h-[8rem] relative"
                 :class="{'spin': isWinCombination && isWinCombination.includes(param.id)}"
           >
-            <span class="absolute w-full h-1 rotate-45 bg-[#2D4628] top-1/2 left-0"/>
-            <span class="absolute w-full h-1 -rotate-45 bg-[#2D4628] top-1/2 left-0"/>
+            <span class="absolute w-full h-2 rotate-45 bg-[#2D4628] top-1/2 left-0"/>
+            <span class="absolute w-full h-2 -rotate-45 bg-[#2D4628] top-1/2 left-0"/>
           </span>
         </button>
       </div>
+      <span class="absolute top-1/2 right-1/2 transform -translate-x-1/2 -translate-y-1/2">
+        <ConfettiExplosion v-if="isWinCombination"/>
+      </span>
+      <button
+          @click="reload"
+          class="absolute top-2 right-2 p-2 rounded-lg hover:bg-[#8DC089]"
+      >
+        <img
+            :src="ReloadSvg"
+            alt="reload"
+            class="w-8 h-8"
+        />
+      </button>
     </div>
   </div>
 </template>
