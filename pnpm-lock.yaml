@@ -12,10 +12,12 @@ specifiers:
   vite: ^5.0.0
   vite-plugin-eslint: ^1.8.1
   vue: ^3.3.8
+  vue-confetti-explosion: ^1.0.2
   vue-tsc: ^1.8.22
 
 dependencies:
   vue: 3.3.8_typescript@5.2.2
+  vue-confetti-explosion: 1.0.2_vue@3.3.8
 
 devDependencies:
   '@antfu/eslint-config': 1.2.1_6acznz3ehjwuvmze655r5sqk3e
@@ -2977,6 +2979,15 @@ packages:
     optionalDependencies:
       fsevents: 2.3.3
     dev: true
+
+  /vue-confetti-explosion/1.0.2_vue@3.3.8:
+    resolution: {integrity: sha512-80OboM3/6BItIoZ6DpNcZFqGpF607kjIVc5af56oKgtFmt5yWehvJeoYhkzYlqxrqdBe0Ko4Ie3bWrmLau+dJw==}
+    engines: {node: '>=12'}
+    peerDependencies:
+      vue: ^3.0.5
+    dependencies:
+      vue: 3.3.8_typescript@5.2.2
+    dev: false
 
   /vue-eslint-parser/9.3.2_eslint@8.54.0:
     resolution: {integrity: sha512-q7tWyCVaV9f8iQyIA5Mkj/S6AoJ9KBN8IeUSf3XEmBrOtxOZnfTg5s4KClbZBCK3GtnT/+RyCLZyDHuZwTuBjg==}
