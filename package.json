@@ -6,8 +6,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vue-tsc && vite build",
-    "preview": "vite preview"
+    "build": "vue-tsc && vite build && pnpm run copy-dist",
+    "preview": "vite preview",
+    "copy-dist": "cp -r dist/* public/"
   },
   "dependencies": {
     "vue": "^3.3.8",
