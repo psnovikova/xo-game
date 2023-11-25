@@ -19,8 +19,8 @@ jobs:
 
       - name: Install dependencies and build
         run: |
-          npm install # Или замените на pnpm install, если используете pnpm
-          npm run build # Или ваш скрипт для сборки проекта
+          pnpm install
+          pnpm run build
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
