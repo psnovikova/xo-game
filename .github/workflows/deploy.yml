@@ -15,7 +15,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '14'
+          node-version: '16'
 
       - name: Install dependencies and build
         run: |
@@ -28,4 +28,3 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist # Измените на путь к папке с собранным проектом (например, './dist', './public' и т.д.)
           publish_branch: gh-pages # Имя ветки, в которую будет происходить деплой
-
