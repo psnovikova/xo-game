@@ -4,10 +4,10 @@
 
 ### Done: 
 - implement the logic of the PvP game with the ability to restart the game
-
-### Plans:
 - write the logic of a game against the computer with the ability to choose a PvP/PvE mode
 - adaptation for mobile devices
+
+### Plans:
 - create a selection of color themes
 - adding parallax effects
 
