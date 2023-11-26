@@ -35,6 +35,8 @@ jobs:
         with:
           node-version: 16
           cache: 'pnpm'
+      - name: Add pnpm to PATH
+        run: echo "::add-path::$(npm bin -g)"
       - name: Install dependencies
         run: pnpm install
       - name: Build
