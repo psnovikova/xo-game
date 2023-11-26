@@ -220,11 +220,11 @@ watch(lastSelectedFigure, () => {
         >
           <span
               v-if="param.isClicked && param.figure === 'circle'"
-              class="circle w-[8rem] h-[8rem] border-8 border-[#FF6933] rounded-full"
+              class="circle w-[5.5rem] h-[5.5rem] sm:w-[8rem] sm:h-[8rem] border-8 border-[#FF6933] rounded-full"
               :class="{'spin': isWinCombination && isWinCombination.includes(param.id)}"
           />
           <span v-if="param.isClicked && param.figure === 'cross'"
-                class="w-[8rem] h-[8rem] relative"
+                class="w-[5.5rem] h-[5.5rem] sm:w-[8rem] sm:h-[8rem] relative"
                 :class="{'spin': isWinCombination && isWinCombination.includes(param.id)}"
           >
             <span class="absolute w-full h-2 rotate-45 bg-[#2D4628] top-1/2 left-0"/>
