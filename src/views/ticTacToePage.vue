@@ -169,6 +169,10 @@ async function playAgainstHuman() {
                 const cellToClick = cellData.value.find(cell => cell.id === findWinCell(crossCells[i])) ?? emptyCells[0]
                 cellClicked(cellToClick as cellParam)
                 return
+              } else if (i === crossCells.length - 1) {
+                const cellToClick = emptyCells[0]
+                cellClicked(cellToClick as cellParam)
+                return
               }
             }
           }
