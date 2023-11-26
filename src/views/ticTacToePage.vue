@@ -140,7 +140,8 @@ async function playAgainstHuman() {
             const crossCells = cellData.value.filter(cell => cell.figure === 'cross').map(cell => cell.id)
             for (let i = 0; i < crossCells.length; i++) {
               if (findWinCell(crossCells[i])) {
-                cellClicked(cellData.value.find(cell => cell.id === findWinCell(crossCells[i])) as cellParam)
+                const cellToClick = cellData.value.find(cell => cell.id === findWinCell(crossCells[i])) ?? emptyCells[0]
+                cellClicked(cellToClick as cellParam)
                 return
               }
             }
@@ -165,7 +166,8 @@ async function playAgainstHuman() {
             const crossCells = cellData.value.filter(cell => cell.figure === 'cross').map(cell => cell.id)
             for (let i = 0; i < crossCells.length; i++) {
               if (findWinCell(crossCells[i])) {
-                cellClicked(cellData.value.find(cell => cell.id === findWinCell(crossCells[i])) as cellParam)
+                const cellToClick = cellData.value.find(cell => cell.id === findWinCell(crossCells[i])) ?? emptyCells[0]
+                cellClicked(cellToClick as cellParam)
                 return
               }
             }
