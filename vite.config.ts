@@ -7,4 +7,13 @@ export default defineConfig({
     plugins: [
         vue(),
     ],
+    build: {
+        assetsDir: 'assets',
+        outDir: 'dist',
+        rollupOptions: {
+            input: {
+                main: 'src/main.js',
+            }
+        }
+    }
 })
