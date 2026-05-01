@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:online": "node server/index.js",
     "build": "vite build",
     "preview": "vite preview",
     "copy-dist": "cp -r dist/* public/"

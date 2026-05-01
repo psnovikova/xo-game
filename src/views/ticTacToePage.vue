@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import {computed, ref, watch} from "vue";
+import {computed, onMounted, ref, watch} from "vue";
 import ConfettiExplosion from "vue-confetti-explosion";
 import ReloadSvg from "../assets/reload.svg"
 import SwitchMode from "./components/SwitchMode.vue";
+import {useOnlinePvp} from "../composables/useOnlinePvp";
 
 type FigureType = 'circle' | 'cross'
 type ModeType = 'pve' | 'pvp'
@@ -39,6 +40,22 @@ const cellData = ref<cellParam[]>([
 const lastSelectedFigure = ref<FigureType>('cross')
 const selectedMode = ref<ModeType>('pve')
 const isDisabledClick = ref(false)
+const copied = ref(false)
+
+const {
+  board: onlineBoard,
+  connect,
+  error: onlineError,
+  isConnected,
+  isMyTurn,
+  isWaitingOpponent,
+  resetOnlineGame,
+  roomLink,
+  sendMove,
+  side,
+  turn,
+  winner,
+} = useOnlinePvp()
 
 const isWinCombination = computed(() => {
 
@@ -188,7 +205,19 @@ function cellClicked(param: cellParam) {
   param.figure = lastSelectedFigure.value
 }
 
+function onlineCellClicked(param: cellParam) {
+  if (selectedMode.value !== 'pvp')
+    return
+  if (!isConnected.value || isWaitingOpponent.value || !isMyTurn.value || !!winner.value)
+    return
+  sendMove(param.id - 1)
+}
+
 function reload() {
+  if (selectedMode.value === 'pvp') {
+    resetOnlineGame()
+    return
+  }
   cellData.value = cellData.value.map(cell => {
     cell.isClicked = false
     cell.figure = null
@@ -200,12 +229,56 @@ function reload() {
 
 watch(selectedMode, () => {
   reload()
+  if (selectedMode.value === 'pvp') {
+    const roomFromUrl = new URL(window.location.href).searchParams.get('room') ?? crypto.randomUUID().slice(0, 6)
+    connect(roomFromUrl)
+  }
 })
 
 watch(lastSelectedFigure, () => {
   if (selectedMode.value === 'pve' && lastSelectedFigure.value === 'circle') {
     playAgainstHuman()
   }
+})
+
+watch(onlineBoard, () => {
+  if (selectedMode.value !== 'pvp')
+    return
+
+  cellData.value = cellData.value.map((cell, index) => ({
+    ...cell,
+    isClicked: !!onlineBoard.value[index],
+    figure: onlineBoard.value[index],
+  }))
+}, {immediate: true})
+
+async function copyRoomLink() {
+  if (!roomLink.value)
+    return
+  await navigator.clipboard.writeText(roomLink.value)
+  copied.value = true
+  setTimeout(() => copied.value = false, 1500)
+}
+
+const pvpStatusText = computed(() => {
+  if (onlineError.value)
+    return onlineError.value
+  if (!isConnected.value)
+    return 'Connecting...'
+  if (isWaitingOpponent.value)
+    return 'Waiting for opponent...'
+  if (winner.value === 'draw')
+    return 'Draw'
+  if (winner.value)
+    return winner.value === side.value ? 'You won' : 'You lost'
+
+  return isMyTurn.value ? `Your move (${turn.value})` : `Opponent move (${turn.value})`
+})
+
+onMounted(() => {
+  const roomFromUrl = new URL(window.location.href).searchParams.get('room')
+  if (roomFromUrl)
+    selectedMode.value = 'pvp'
 })
 </script>
 
@@ -219,10 +292,14 @@ watch(lastSelectedFigure, () => {
         <button
             v-for="param in cellData"
             :key="param.id"
-            :disabled="isDisabledClick || param.isClicked || !!isWinCombination"
+            :disabled="selectedMode === 'pve'
+              ? isDisabledClick || param.isClicked || !!isWinCombination
+              : param.isClicked || !isConnected || isWaitingOpponent || !isMyTurn || !!winner"
             class="w-full h-full flex items-center justify-center duration-200"
-            :class="{ 'hover:bg-[#8DC089]': !param.isClicked && !isWinCombination && !isDisabledClick}"
-            @click="cellClicked(param)"
+            :class="{ 'hover:bg-[#8DC089]': selectedMode === 'pve'
+              ? (!param.isClicked && !isWinCombination && !isDisabledClick)
+              : (!param.isClicked && isConnected && !isWaitingOpponent && isMyTurn && !winner)}"
+            @click="selectedMode === 'pve' ? cellClicked(param) : onlineCellClicked(param)"
         >
           <span
               v-if="param.isClicked && param.figure === 'circle'"
@@ -239,7 +316,7 @@ watch(lastSelectedFigure, () => {
         </button>
       </div>
       <span class="absolute top-1/2 right-1/2 transform -translate-x-1/2 -translate-y-1/2">
-        <ConfettiExplosion v-if="isWinCombination"/>
+        <ConfettiExplosion v-if="selectedMode === 'pve' ? isWinCombination : winner"/>
       </span>
       <div class="absolute top-2 right-2 flex flex-row space-x-2">
         <SwitchMode v-model="selectedMode"/>
@@ -252,6 +329,16 @@ watch(lastSelectedFigure, () => {
               alt="reload"
               class="w-8 h-8"
           />
+        </button>
+      </div>
+      <div v-if="selectedMode === 'pvp'" class="absolute left-2 top-2 bg-[#FAD074]/90 border-2 border-[#E83100] p-2 rounded-sm text-sm">
+        <div class="font-semibold">{{ pvpStatusText }}</div>
+        <div class="text-[#2D4628]">You: {{ side }}</div>
+        <button
+            class="mt-1 p-1 rounded-sm border border-[#E83100] hover:bg-[#FFA570] duration-200"
+            @click="copyRoomLink"
+        >
+          {{ copied ? 'Copied' : 'Copy invite link' }}
         </button>
       </div>
     </div>
