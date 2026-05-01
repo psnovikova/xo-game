@@ -15,8 +15,6 @@ jobs:
 
       - name: Set up pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: 7.25.0
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -35,4 +33,4 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
-          publish_branch: gh-pages # Имя ветки, в которую будет происходить деплой
+          publish_branch: gh-pages
